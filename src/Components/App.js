@@ -97,7 +97,6 @@ function App() {
   }, []);
   return (
     <div>
-      <Navigation />
       <PostList
         discussionContent={posts}
         onUpdateLikes={handleUpdateLikes}
