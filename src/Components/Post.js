@@ -3,7 +3,15 @@ import Button from "./Button";
 import PostComments from "./PostComments";
 import TextExpander from "./TextExpander";
 import LikesCounter from "./Likes";
-export default function Post({ id, title, content, likes, onUpdateLikes }) {
+export default function Post({
+  id,
+  title,
+  content,
+  likes,
+  onUpdateLikes,
+  comments,
+  onMakeComment,
+}) {
   function handleSelection() {
     setCommentView((CommentView) => !CommentView);
   }
@@ -31,7 +39,13 @@ export default function Post({ id, title, content, likes, onUpdateLikes }) {
           </Button>
         }
       </li>
-      {CommentView && <PostComments onSelection={handleSelection} />}
+      {CommentView && (
+        <PostComments
+          comments={comments}
+          onMakeComment={onMakeComment}
+          id={id}
+        />
+      )}
     </>
   );
 }

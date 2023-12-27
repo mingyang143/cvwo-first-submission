@@ -11,6 +11,7 @@ const discussionContent = [
     content:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed mollis leo. Nulla non ligula molestie, varius velit non, maximus velit. Sed eros lorem, blandit et interdum ut, pharetra quis libero. Vivamus convallis nisl eros, vel aliquam sapien eleifend vitae. In hac habitasse platea dictumst. Cras arcu velit, sagittis et.",
     likes: 10,
+    comments: ["qwewewe", "rtertret", "qwewqe"],
   },
   {
     id: 1,
@@ -18,6 +19,7 @@ const discussionContent = [
     content:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed mollis leo. Nulla non ligula molestie, varius velit non, maximus velit. Sed eros lorem, blandit et interdum ut, pharetra quis libero. Vivamus convallis nisl eros, vel aliquam sapien eleifend vitae. In hac habitasse platea dictumst. Cras arcu velit, sagittis et.",
     likes: 7,
+    comments: ["qwewewe", "rtertret", "qwewqe"],
   },
   {
     id: 2,
@@ -25,6 +27,7 @@ const discussionContent = [
     content:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed mollis leo. Nulla non ligula molestie, varius velit non, maximus velit. Sed eros lorem, blandit et interdum ut, pharetra quis libero. Vivamus convallis nisl eros, vel aliquam sapien eleifend vitae. In hac habitasse platea dictumst. Cras arcu velit, sagittis et.",
     likes: 1,
+    comments: ["qwewewe", "rtertret", "qwewqe"],
   },
 ];
 
@@ -40,6 +43,15 @@ function App() {
     setPosts((posts) =>
       posts.map((post) =>
         post.id === id ? { ...post, likes: post.likes + 1 } : post
+      )
+    );
+  }
+  function handleMakeComment(comment, id) {
+    setPosts(
+      posts.map((post) =>
+        post.id === id
+          ? { ...post, comments: [...post.comments, comment] }
+          : post
       )
     );
   }
@@ -86,7 +98,11 @@ function App() {
   return (
     <div>
       <Navigation />
-      <PostList discussionContent={posts} onUpdateLikes={handleUpdateLikes} />
+      <PostList
+        discussionContent={posts}
+        onUpdateLikes={handleUpdateLikes}
+        onMakeComment={handleMakeComment}
+      />
       {AddPostformOpen && <FormMakePost onAddPost={handleAddPost} />}
       {!AddPostformOpen && (
         <Button onClick={handleMakePost}>Create Post 🗣️</Button>

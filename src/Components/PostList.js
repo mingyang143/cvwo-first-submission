@@ -1,5 +1,9 @@
 import Post from "./Post";
-export default function PostList({ discussionContent, onUpdateLikes }) {
+export default function PostList({
+  discussionContent,
+  onUpdateLikes,
+  onMakeComment,
+}) {
   return (
     <div>
       <ul>
@@ -11,6 +15,8 @@ export default function PostList({ discussionContent, onUpdateLikes }) {
             content={post.content}
             likes={post.likes}
             onUpdateLikes={onUpdateLikes}
+            comments={post.comments}
+            onMakeComment={onMakeComment}
           >
             {" "}
           </Post>

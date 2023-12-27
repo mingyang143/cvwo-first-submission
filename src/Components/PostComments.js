@@ -1,24 +1,31 @@
+import { useState } from "react";
 import Button from "./Button";
 import Comment from "./Comment";
 
-const initialComments = [
-  "Lorem ipsum dolor sit amet, consectetur adipiscing.",
-  "Lorem ipsum dolor sit amet, consectetur adipiscing.",
-  "Lorem ipsum dolor sit amet, consectetur adipiscing.",
-];
-
-export default function PostComments({ onSelection }) {
+export default function PostComments({ comments, onMakeComment, id }) {
+  function handleMakeComment(e) {
+    e.preventDefault();
+    if (!textBox) {
+      return;
+    }
+    onMakeComment(textBox, id);
+    setTextBox("");
+  }
+  const [textBox, setTextBox] = useState("");
   return (
     <div>
-      COMMENTS
-      {initialComments.map((comment) => (
+      COMMENTS ({comments.length})
+      {comments.map((comment) => (
         <Comment>{comment}</Comment>
       ))}
-      <form>
-        <input type="text"></input>
+      <form onSubmit={(e) => handleMakeComment(e)}>
+        <input
+          type="text"
+          value={textBox}
+          onChange={(e) => setTextBox(e.target.value)}
+        ></input>
         <Button>Add comment</Button>
       </form>
-      {/* <Button onClick={onSelection}>Close comments ❌</Button> */}
     </div>
   );
 }
