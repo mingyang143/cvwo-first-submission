@@ -2,7 +2,7 @@ import { useState } from "react";
 import Button from "./Button";
 import PostComments from "./PostComments";
 import TextExpander from "./TextExpander";
-import LikesCounter from "./Likes";
+import LikesCounter from "./LikesCounter";
 export default function Post({
   id,
   title,

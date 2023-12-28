@@ -5,107 +5,194 @@
 }
 
 body {
-  font-family: sans-serif;
-  margin: 48px 96px;
-  position: relative;
-  color: #444;
-}
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 
-button {
-  color: inherit;
-  font-family: inherit;
-  border: none;
-  cursor: pointer;
-}
-
-.toggle {
-  position: absolute;
-  right: 0;
-  background: none;
-  font-size: 30px;
-  padding: 4px;
-}
-
-.tabs {
-  margin-bottom: 8px;
-}
-
-.tab {
-  border-radius: 12px;
-  background-color: #edf2ff;
-  padding: 12px 24px;
-  margin-right: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #364fc7;
-  transition: all 0.3s;
-}
-
-.tab.active,
-.tab:hover {
-  background-color: #364fc7;
-  color: #fff;
-}
-
-.tab-content {
-  background-color: #edf2ff;
+  color: #222;
+  line-height: 1.25;
+  background: #fff;
   padding: 32px;
-  border-radius: 12px;
 }
 
-.tab-content h4 {
-  font-size: 20px;
-  margin-bottom: 16px;
-  color: #364fc7;
+.dark-mode {
+  filter: invert(100%);
+  transition: all 0.5s;
 }
 
-.tab-content p {
-  font-size: 18px;
+.btn-dark-mode {
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding: 16px;
+  line-height: 1;
+  font-size: 26px;
+  background-color: #ffe8cc;
+  border: none;
 }
 
-.tab-actions {
-  display: flex;
+section {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+header {
+  margin-bottom: 32px;
+  font-weight: bold;
+
   justify-content: space-between;
-  margin-top: 16px;
-  margin-bottom: 24px;
-}
-
-.tab-actions > button {
-  background: none;
-  text-decoration: underline;
-  color: #4c6ef5;
-  font-size: 14px;
-}
-
-.hearts-counter {
   display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
-.hearts-counter button {
-  background-color: #f03e3e;
-  padding: 4px 6px;
-  border-radius: 4px;
-  color: #fff;
+h1 {
+  font-size: 26px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+h1 span {
+  font-size: 140%;
   line-height: 1;
 }
 
-.tab-undo {
+h2 {
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  color: #333;
+}
+
+h3 {
+  text-transform: capitalize;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+header div {
   display: flex;
-  gap: 8px;
+  gap: 32px;
+  align-items: center;
 }
 
-.tab-undo button {
-  background-color: #364fc7;
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 4px;
+header button {
+  font-size: 14px;
 }
 
+form {
+  padding: 24px;
+  background-color: #fff4e6;
+  display: flex;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+main {
+  margin-bottom: 40px;
+}
+
+aside {
+  margin-bottom: 40px;
+  opacity: 75%;
+}
+
+input,
+textarea,
+button {
+  font-size: 16px;
+  padding: 8px 12px;
+  border: 1px solid #ffe8cc;
+  font-family: inherit;
+  color: inherit;
+}
+
+input {
+  width: 12rem;
+}
+
+*::placeholder {
+  color: #999;
+}
+
+*:focus {
+  outline: 2px solid #ffa94d;
+  border-radius: 2px;
+}
+
+textarea {
+  flex: 1;
+  height: 50px;
+}
+
+button {
+  border: 1px solid #ffa94d;
+  background-color: #ffa94d;
+  font-weight: 700;
+  padding: 9px 24px;
+  cursor: pointer;
+  border-radius: 8%;
+}
+
+h3 {
+  text-transform: capitalize;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+/* COMMENT BOX */
 .box {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 7px;
   background-color: #f7f7f7;
+}
+
+/* NAV */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
+.nav a:link,
+.nav a:visited {
+  text-decoration: none;
+  color: #42484d;
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.nav a:link:hover,
+.nav a:visited:hover {
+  background-color: #ffe8cc;
+}
+/* FORM */
+.login {
+  margin: 2.5rem;
+  padding: 2.5rem 5rem;
+  min-height: calc(100vh - 5rem);
+}
+
+.form {
+  border-radius: 7px;
+  padding: 2rem 3rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  /* Different from other form */
+  width: 48rem;
+  margin: 8rem auto;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }

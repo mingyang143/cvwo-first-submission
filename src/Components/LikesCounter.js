@@ -2,7 +2,7 @@ export default function LikesCounter({ likes, onUpdateLikes }) {
   return (
     <div className="hearts-counter">
       <span>{likes} ❤️</span>
-      <button onClick={onUpdateLikes}>+</button>
+      <button onClick={onUpdateLikes}>Like 💖</button>
     </div>
   );
 }

@@ -1,4 +1,3 @@
-import Navigation from "./Navigation";
 import PostList from "./PostList";
 import FormMakePost from "./FormMakePost";
 import Button from "./Button";
@@ -55,8 +54,10 @@ function App() {
       )
     );
   }
+
   const [posts, setPosts] = useState(discussionContent);
   const [AddPostformOpen, setFormOpen] = useState(false);
+
   const [users, setUsers] = useState([]);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -95,8 +96,9 @@ function App() {
 
     fetchUsers();
   }, []);
+
   return (
-    <div>
+    <section>
       <PostList
         discussionContent={posts}
         onUpdateLikes={handleUpdateLikes}
@@ -106,7 +108,7 @@ function App() {
       {!AddPostformOpen && (
         <Button onClick={handleMakePost}>Create Post 🗣️</Button>
       )}
-    </div>
+    </section>
   );
 }
 
