@@ -1,8 +1,10 @@
 import { useState } from "react";
 import Button from "./Button";
 import Comment from "./Comment";
+import { usePosts } from "./PostContext";
 
-export default function PostComments({ comments, onMakeComment, id }) {
+export default function PostComments({ comments, id }) {
+  const { onMakeComment } = usePosts();
   function handleMakeComment(e) {
     e.preventDefault();
     if (!textBox) {

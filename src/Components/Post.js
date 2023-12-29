@@ -3,15 +3,10 @@ import Button from "./Button";
 import PostComments from "./PostComments";
 import TextExpander from "./TextExpander";
 import LikesCounter from "./LikesCounter";
-export default function Post({
-  id,
-  title,
-  content,
-  likes,
-  onUpdateLikes,
-  comments,
-  onMakeComment,
-}) {
+import { usePosts } from "./PostContext";
+export default function Post({ postContent }) {
+  const { onUpdateLikes, onMakeComment } = usePosts();
+  const { id, title, content, likes, comments } = postContent;
   function handleSelection() {
     setCommentView((CommentView) => !CommentView);
   }
