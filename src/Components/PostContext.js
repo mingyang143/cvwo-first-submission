@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const PostContext = createContext();
 
@@ -56,44 +56,36 @@ function PostProvider({ children }) {
   const [posts, setPosts] = useState(discussionContent);
   const [AddPostformOpen, setPostFormOpen] = useState(false);
 
-  //const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [err, setError] = useState("");
 
-  //   const [isLoading, setIsLoading] = useState(false);
-  //   const [err, setError] = useState("");
-  //   useEffect(function () {
-  //     //callback?.();
-  //     //const controller = new AbortController();
-  //     async function fetchUsers() {
-  //       try {
-  //         setIsLoading(true);
-  //         setError("");
+  useEffect(function () {
+    const controller = new AbortController();
+    async function fetchUsers() {
+      try {
+        setIsLoading(true);
+        setError("");
+        const res = await fetch("/users");
+        if (!res.ok)
+          throw new Error("Something went wrong with fetching users", {
+            signal: controller.signal,
+          });
+        const data = await res.json();
+        console.log(data.payload);
+        // setUsers(data.Search);
+        setError("");
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          setError(err.message);
+        }
+        console.log(err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
 
-  //         // const res = await fetch("172.18.92.251:8000/users", {
-  //         //   signal: controller.signal,
-  //         // });
-  //         const res = await fetch("172.18.92.251:8000/users");
-  //         if (!res.ok)
-  //           throw new Error("Something went wrong with fetching movies");
-
-  //         const data = await res.content;
-  //         // if (data.errorCode !== "0") {
-  //         //   throw new Error("failed to get usrs!");
-  //         // }
-  //         console.log(data);
-  //         // setUsers(data.Search);
-  //         // setError("");
-  //       } catch (err) {
-  //         if (err.name !== "AbortError") {
-  //           setError(err.message);
-  //         }
-  //         console.log(err);
-  //       } finally {
-  //         setIsLoading(false);
-  //       }
-  //     }
-
-  //     fetchUsers();
-  //   }, []);
+    fetchUsers();
+  }, []);
 
   return (
     //2) Provide value to child components
