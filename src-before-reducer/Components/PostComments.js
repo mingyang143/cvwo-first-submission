@@ -4,16 +4,16 @@ import Comment from "./Comment";
 import { usePosts } from "./PostContext";
 
 export default function PostComments({ comments, id }) {
-  const { dispatch } = usePosts();
+  const { onMakeComment } = usePosts();
   function handleMakeComment(e) {
     e.preventDefault();
-    if (!comment) {
+    if (!textBox) {
       return;
     }
-    dispatch({ type: "posts/comment", payload: { comment, id } });
-    setComment("");
+    onMakeComment(textBox, id);
+    setTextBox("");
   }
-  const [comment, setComment] = useState("");
+  const [textBox, setTextBox] = useState("");
   return (
     <div>
       COMMENTS ({comments.length})
@@ -23,8 +23,8 @@ export default function PostComments({ comments, id }) {
       <form onSubmit={(e) => handleMakeComment(e)}>
         <input
           type="text"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          value={textBox}
+          onChange={(e) => setTextBox(e.target.value)}
         ></input>
         <Button>Add comment</Button>
       </form>

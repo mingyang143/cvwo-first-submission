@@ -5,7 +5,7 @@ import TextExpander from "./TextExpander";
 import LikesCounter from "./LikesCounter";
 import { usePosts } from "./PostContext";
 export default function Post({ postContent }) {
-  const { dispatch } = usePosts();
+  const { onUpdateLikes, onMakeComment } = usePosts();
   const { id, title, content, likes, comments } = postContent;
   function handleSelection() {
     setCommentView((CommentView) => !CommentView);
@@ -26,10 +26,7 @@ export default function Post({ postContent }) {
             <p>{content}</p>
           </div>
         )}
-        <LikesCounter
-          likes={likes}
-          onUpdateLikes={() => dispatch({ type: "posts/likes", payload: id })}
-        />
+        <LikesCounter likes={likes} onUpdateLikes={() => onUpdateLikes(id)} />
 
         {
           <Button onClick={handleSelection}>
@@ -37,7 +34,13 @@ export default function Post({ postContent }) {
           </Button>
         }
       </li>
-      {CommentView && <PostComments comments={comments} id={id} />}
+      {CommentView && (
+        <PostComments
+          comments={comments}
+          onMakeComment={onMakeComment}
+          id={id}
+        />
+      )}
     </>
   );
 }

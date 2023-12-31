@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useReducer } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 
 const PostContext = createContext();
 
@@ -41,7 +47,7 @@ function reducer(state, action) {
     case "posts/addPost":
       return {
         ...state,
-        posts: [...state.posts, action.payload],
+        posts: [...state, action.payload],
         isPostFormOpen: false,
       };
     case "posts/likes":
@@ -80,32 +86,57 @@ function PostProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { posts, isPostFormOpen, isLoading, error } = state;
 
-  // useEffect(function () {
-  //   const controller = new AbortController();
-  //   async function fetchUsers() {
-  //     try {
-  //       dispatch({ type: "posts/loadingToggle" });
-  //       dispatch({ type: "posts/errorFetch", payload: "" });
-  //       const res = await fetch("/users");
-  //       if (!res.ok)
-  //         throw new Error("Something went wrong with fetching users", {
-  //           signal: controller.signal,
-  //         });
-  //       const data = await res.json();
-  //       // setUsers(data.Search);
-  //       dispatch({ type: "posts/errorFetch", payload: "" });
-  //     } catch (err) {
-  //       if (err.name !== "AbortError") {
-  //         dispatch({ type: "posts/errorFetch", payload: err.message });
-  //       }
-  //       console.log(err);
-  //     } finally {
-  //       dispatch({ type: "posts/loadingToggle" });
-  //     }
-  //   }
+  // function handlePostOpen(post) {
+  //   setPostFormOpen((formOpen) => !formOpen);
+  // }
+  // function handleAddPost(post) {
+  //   setPosts((posts) => );
+  //   setPostFormOpen(false);
+  // }
+  // function handleUpdateLikes(id) {
+  //   setPosts((posts) =>
+  //     posts.map((post) =>
+  //       post.id === id ? { ...post, likes: post.likes + 1 } : post
+  //     )
+  //   );
+  // // }
+  // function handleMakeComment(comment, id) {
+  //   setPosts(
+  //     posts.map((post) =>
+  //       post.id === id
+  //         ? { ...post, comments: [...post.comments, comment] }
+  //         : post
+  //     )
+  //   );
+  // }
 
-  //   fetchUsers();
-  // }, []);
+  useEffect(function () {
+    const controller = new AbortController();
+    async function fetchUsers() {
+      try {
+        dispatch({ type: "posts/loadingToggle" });
+        dispatch({ type: "posts/errorFetch", payload: "" });
+        const res = await fetch("/users");
+        if (!res.ok)
+          throw new Error("Something went wrong with fetching users", {
+            signal: controller.signal,
+          });
+        const data = await res.json();
+        console.log(data.payload);
+        // setUsers(data.Search);
+        dispatch({ type: "posts/errorFetch", payload: "" });
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          dispatch({ type: "posts/errorFetch", payload: err.message });
+        }
+        console.log(err);
+      } finally {
+        dispatch({ type: "posts/loadingToggle" });
+      }
+    }
+
+    fetchUsers();
+  }, []);
 
   return (
     //2) Provide value to child components

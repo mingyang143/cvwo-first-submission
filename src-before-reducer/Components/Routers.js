@@ -5,7 +5,7 @@ import Login from "./Login";
 import Navigation from "./Navigation";
 import Button from "./Button";
 // import { PostProvider } from "./PostContext";
-import { PostProvider } from "./PostContext";
+import { PostProvider } from "./PostContext-with-reducer";
 import { AuthProvider } from "./AuthContext";
 import HomePage from "../HomePage";
 import ProtectedRoute from "./ProtectedRoute";

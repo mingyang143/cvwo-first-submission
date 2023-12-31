@@ -4,17 +4,12 @@ import Button from "./Button";
 import { usePosts } from "./PostContext";
 
 function App() {
-  const { isPostFormOpen, dispatch } = usePosts();
-
+  const { AddPostformOpen, onPostOpen } = usePosts();
   return (
     <section>
       <PostList />
-      {isPostFormOpen && <FormMakePost />}
-      {!isPostFormOpen && (
-        <Button onClick={() => dispatch({ type: "posts/formToggle" })}>
-          Create Post 🗣️
-        </Button>
-      )}
+      {AddPostformOpen && <FormMakePost />}
+      {!AddPostformOpen && <Button onClick={onPostOpen}>Create Post 🗣️</Button>}
     </section>
   );
 }
