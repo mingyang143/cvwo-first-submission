@@ -2,7 +2,7 @@ import { useState } from "react";
 import Button from "./Button";
 import { usePosts } from "./PostContext";
 export default function FormMakePost() {
-  const { dispatch } = usePosts();
+  const { dispatch, createPost } = usePosts();
   const [postTitle, setpostTitle] = useState("");
   const [postContent, setPostContent] = useState("");
   const id = crypto.randomUUID();
@@ -17,6 +17,7 @@ export default function FormMakePost() {
       comments: [],
     };
     dispatch({ type: "posts/addPost", payload: newPost });
+    createPost();
   }
   return (
     <form onSubmit={handleSubmit}>

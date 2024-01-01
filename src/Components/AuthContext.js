@@ -1,7 +1,9 @@
 import { createContext, useContext, useReducer } from "react";
+import { useNavigate } from "react-router-dom";
 const initialState = {
   user: null,
   isAuthenticated: false,
+  isLoginLoading: false,
 };
 
 // const FAKE_USER = {
@@ -16,32 +18,47 @@ function reducer(state, action) {
     case "login":
       return { ...state, user: action.payload, isAuthenticated: true };
     case "logout":
-      return { ...state, user: null, isAuthenticated: false };
+      return {
+        ...state,
+        user: null,
+        isAuthenticated: false,
+      };
+    case "toggleLoading":
+      return { ...state, isLoginLoading: !state.isLoginLoading };
     default:
       throw new Error("unknown action");
   }
 }
 const AuthContext = createContext();
 function AuthProvider({ children }) {
+  const navigate = useNavigate();
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { user, isAuthenticated } = state;
+  const { user, isAuthenticated, isLoginLoading } = state;
 
   async function login(username, password) {
+    dispatch({ type: "toggleLoading" });
     const data = await isValidUser({ name: username });
+    dispatch({ type: "toggleLoading" });
     if (data?.errorCode === 0) {
-      dispatch({ type: "login", payload: { name: username } });
+      dispatch({
+        type: "login",
+        payload: { name: username, user_id: data.payload.data.id },
+      });
       alert("Successfully logged in!");
     } else {
       alert("No user found, please create a user! ❌");
     }
   }
   async function createUser(username, password) {
+    dispatch({ type: "toggleLoading" });
     const data = await PostUser({ name: username });
+    dispatch({ type: "toggleLoading" });
     if (data) {
       alert("New user created, please log in now");
     } else {
       alert("Failed to create new user");
     }
+    navigate("/login");
   }
 
   function logout() {
@@ -68,6 +85,7 @@ function AuthProvider({ children }) {
         },
       });
       const data = await res.json();
+
       return data;
     } catch {
       alert("There was an error loading data...");
@@ -76,7 +94,14 @@ function AuthProvider({ children }) {
   }
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, login, logout, createUser }}
+      value={{
+        user,
+        isAuthenticated,
+        login,
+        logout,
+        createUser,
+        isLoginLoading,
+      }}
     >
       {children}
     </AuthContext.Provider>

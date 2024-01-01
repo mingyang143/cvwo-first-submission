@@ -21,8 +21,8 @@ function Main() {
     [isDark]
   );
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <header>
           <Navigation />
           <Button
@@ -49,8 +49,8 @@ function Main() {
           <Route path="create" element={<CreateUser />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

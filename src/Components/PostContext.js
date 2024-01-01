@@ -1,34 +1,37 @@
 import { createContext, useContext, useEffect, useReducer } from "react";
+import { useAuth } from "./AuthContext";
 
 const PostContext = createContext();
 
+// [
+//   {
+//     id: 0,
+//     title: "why are cats curious?",
+//     content:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed mollis leo. Nulla non ligula molestie, varius velit non, maximus velit. Sed eros lorem, blandit et interdum ut, pharetra quis libero. Vivamus convallis nisl eros, vel aliquam sapien eleifend vitae. In hac habitasse platea dictumst. Cras arcu velit, sagittis et.",
+//     likes: 10,
+//     comments: ["qwewewe", "rtertret", "qwewqe"],
+//   },
+//   {
+//     id: 1,
+//     title: "why do we have to study?",
+//     content:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed mollis leo. Nulla non ligula molestie, varius velit non, maximus velit. Sed eros lorem, blandit et interdum ut, pharetra quis libero. Vivamus convallis nisl eros, vel aliquam sapien eleifend vitae. In hac habitasse platea dictumst. Cras arcu velit, sagittis et.",
+//     likes: 7,
+//     comments: ["qwewewe", "rtertret", "qwewqe"],
+//   },
+//   {
+//     id: 2,
+//     title: "How to escape the matrix?",
+//     content:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed mollis leo. Nulla non ligula molestie, varius velit non, maximus velit. Sed eros lorem, blandit et interdum ut, pharetra quis libero. Vivamus convallis nisl eros, vel aliquam sapien eleifend vitae. In hac habitasse platea dictumst. Cras arcu velit, sagittis et.",
+//     likes: 1,
+//     comments: ["qwewewe", "rtertret", "qwewqe"],
+//   },
+// ]
+
 const initialState = {
-  posts: [
-    {
-      id: 0,
-      title: "why are cats curious?",
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed mollis leo. Nulla non ligula molestie, varius velit non, maximus velit. Sed eros lorem, blandit et interdum ut, pharetra quis libero. Vivamus convallis nisl eros, vel aliquam sapien eleifend vitae. In hac habitasse platea dictumst. Cras arcu velit, sagittis et.",
-      likes: 10,
-      comments: ["qwewewe", "rtertret", "qwewqe"],
-    },
-    {
-      id: 1,
-      title: "why do we have to study?",
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed mollis leo. Nulla non ligula molestie, varius velit non, maximus velit. Sed eros lorem, blandit et interdum ut, pharetra quis libero. Vivamus convallis nisl eros, vel aliquam sapien eleifend vitae. In hac habitasse platea dictumst. Cras arcu velit, sagittis et.",
-      likes: 7,
-      comments: ["qwewewe", "rtertret", "qwewqe"],
-    },
-    {
-      id: 2,
-      title: "How to escape the matrix?",
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed mollis leo. Nulla non ligula molestie, varius velit non, maximus velit. Sed eros lorem, blandit et interdum ut, pharetra quis libero. Vivamus convallis nisl eros, vel aliquam sapien eleifend vitae. In hac habitasse platea dictumst. Cras arcu velit, sagittis et.",
-      likes: 1,
-      comments: ["qwewewe", "rtertret", "qwewqe"],
-    },
-  ],
+  posts: [],
   isPostFormOpen: false,
   isLoading: false,
   error: "",
@@ -36,6 +39,8 @@ const initialState = {
 
 function reducer(state, action) {
   switch (action.type) {
+    case "posts/fetched":
+      return { ...state, posts: action.payload };
     case "posts/formToggle":
       return { ...state, isPostFormOpen: !state.isPostFormOpen };
     case "posts/addPost":
@@ -51,6 +56,30 @@ function reducer(state, action) {
           post.id === action.payload ? { ...post, likes: post.likes + 1 } : post
         ),
       };
+    case "posts/edit":
+      return {
+        ...state,
+        posts: state.posts.map((post) =>
+          post.id === action.payload.id
+            ? {
+                ...post,
+                title: action.payload.title,
+                content: action.payload.content,
+              }
+            : post
+        ),
+      };
+    case "posts/loadingToggle":
+      return {
+        ...state,
+        isLoading: !state.isLoading,
+        error: "",
+      };
+    case "posts/errorFetch":
+      return {
+        ...state,
+        error: action.payload,
+      };
     case "posts/comment":
       return {
         ...state,
@@ -59,16 +88,6 @@ function reducer(state, action) {
             ? { ...post, comments: [...post.comments, action.payload.comment] }
             : post
         ),
-      };
-    case "posts/loadingToggle":
-      return {
-        ...state,
-        isLoading: !state.isLoading,
-      };
-    case "posts/errorFetch":
-      return {
-        ...state,
-        error: action.payload,
       };
 
     default:
@@ -79,36 +98,93 @@ function reducer(state, action) {
 function PostProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { posts, isPostFormOpen, isLoading, error } = state;
+  const { user } = useAuth();
 
-  // useEffect(function () {
-  //   const controller = new AbortController();
-  //   async function fetchUsers() {
-  //     try {
-  //       dispatch({ type: "posts/loadingToggle" });
-  //       dispatch({ type: "posts/errorFetch", payload: "" });
-  //       const res = await fetch("/users");
-  //       if (!res.ok)
-  //         throw new Error("Something went wrong with fetching users", {
-  //           signal: controller.signal,
-  //         });
-  //       const data = await res.json();
-  //       // setUsers(data.Search);
-  //       dispatch({ type: "posts/errorFetch", payload: "" });
-  //     } catch (err) {
-  //       if (err.name !== "AbortError") {
-  //         dispatch({ type: "posts/errorFetch", payload: err.message });
-  //       }
-  //       console.log(err);
-  //     } finally {
-  //       dispatch({ type: "posts/loadingToggle" });
-  //     }
-  //   }
+  useEffect(function () {
+    const controller = new AbortController();
+    async function fetchUsers() {
+      try {
+        dispatch({ type: "posts/loadingToggle" });
+        const res = await fetch("/discussions");
+        if (!res.ok)
+          throw new Error(
+            "Something went wrong with fetching discussion content",
+            {
+              signal: controller.signal,
+            }
+          );
+        const data = await res.json();
+        const initialState = data.payload.data;
+        dispatch({ type: "posts/fetched", payload: initialState });
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          dispatch({ type: "posts/errorFetch", payload: err.message });
+        }
+        console.log(err);
+      } finally {
+        dispatch({ type: "posts/loadingToggle" });
+      }
+    }
 
-  //   fetchUsers();
-  // }, []);
+    fetchUsers();
+  }, []);
+  //create post need more work with backend and frontend
+  function createPost() {
+    AddPost({
+      id: 1,
+      title: "why do we have to study?",
+      content:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed mollis leo. Nulla non ligula molestie, varius velit non, maximus velit. Sed eros lorem, blandit et interdum ut, pharetra quis libero. Vivamus convallis nisl eros, vel aliquam sapien eleifend vitae. In hac habitasse platea dictumst. Cras arcu velit, sagittis et.",
+      likes: 0,
+      comments: ["qwewewe", "rtertret", "qwewqe"],
+    });
+  }
+  async function AddPost(newPost) {
+    try {
+      const res = await fetch(`/createDiscussion`, {
+        method: "post",
+        body: JSON.stringify(newPost),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log(data);
+      return data;
+    } catch {
+      alert("There was an error loading data...");
+    } finally {
+    }
+  }
+
+  async function postEdit({ id, title, content }) {
+    console.log("editing post");
+    try {
+      dispatch({ type: "posts/loadingToggle" });
+      const res = await fetch(`/discussion`, {
+        method: "post",
+        body: JSON.stringify({
+          id: id,
+          user_id: user.user_id,
+          title: title,
+          content: content,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      dispatch({ type: "posts/edit", payload: { id, title, content } });
+      return data;
+    } catch (err) {
+      dispatch({ type: "posts/errorFetch", payload: err.message });
+      alert("There was an error editing data...");
+    } finally {
+      dispatch({ type: "posts/loadingToggle" });
+    }
+  }
 
   return (
-    //2) Provide value to child components
     <PostContext.Provider
       value={{
         posts,
@@ -116,6 +192,8 @@ function PostProvider({ children }) {
         isLoading,
         error,
         dispatch,
+        postEdit,
+        createPost,
       }}
     >
       {children}
