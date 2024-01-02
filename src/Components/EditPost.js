@@ -2,9 +2,9 @@ import { useState } from "react";
 import Button from "./Button";
 import { usePosts } from "./PostContext";
 
-function EditPost({ id, setIsEditing }) {
-  const [newTitle, setNewTitle] = useState("");
-  const [newContent, setNewContent] = useState("");
+function EditPost({ id, setIsEditing, currTitle, currContent }) {
+  const [newTitle, setNewTitle] = useState(currTitle);
+  const [newContent, setNewContent] = useState(currContent);
   const { postEdit } = usePosts();
 
   function handleSubmit(e) {

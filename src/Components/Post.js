@@ -23,7 +23,12 @@ export default function Post({ postContent }) {
     <>
       <li id={id}>
         {user_id === user.user_id && isEditing ? (
-          <EditPost setIsEditing={setIsEditing} id={id}/>
+          <EditPost
+            setIsEditing={setIsEditing}
+            id={id}
+            currTitle={title}
+            currContent={content}
+          />
         ) : (
           <>
             <label>{title}</label>

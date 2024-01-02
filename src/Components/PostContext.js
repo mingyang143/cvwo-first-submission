@@ -130,6 +130,7 @@ function PostProvider({ children }) {
   }, []);
   //create post need more work with backend and frontend
   function createPost() {
+    console.log("creating post");
     AddPost({
       id: 1,
       title: "why do we have to study?",
@@ -137,11 +138,12 @@ function PostProvider({ children }) {
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed mollis leo. Nulla non ligula molestie, varius velit non, maximus velit. Sed eros lorem, blandit et interdum ut, pharetra quis libero. Vivamus convallis nisl eros, vel aliquam sapien eleifend vitae. In hac habitasse platea dictumst. Cras arcu velit, sagittis et.",
       likes: 0,
       comments: ["qwewewe", "rtertret", "qwewqe"],
+      user_id: user.user_id,
     });
   }
   async function AddPost(newPost) {
     try {
-      const res = await fetch(`/createDiscussion`, {
+      const res = await fetch(`/discussion`, {
         method: "post",
         body: JSON.stringify(newPost),
         headers: {

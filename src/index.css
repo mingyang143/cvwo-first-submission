@@ -13,7 +13,7 @@ body {
   background: #f0ffff;
   padding: 32px;
 }
-
+/* DARKMODE */
 .dark-mode {
   filter: invert(100%);
   transition: all 0.5s;
@@ -29,7 +29,7 @@ body {
   background-color: #ffe8cc;
   border: none;
 }
-
+/* GENERAL STYLES */
 section {
   max-width: 1140px;
   margin: 0 auto;
@@ -44,9 +44,9 @@ header {
 }
 
 h1 {
-  font-size: 26px;
+  font-size: 27px;
   display: flex;
-  gap: 8px;
+  gap: 8.5px;
   align-items: center;
 }
 
@@ -66,10 +66,10 @@ h3 {
   margin-bottom: 16px;
   color: #333;
 }
-
+/* 
 header div {
   display: flex;
-  gap: 32px;
+  gap: 30px;
   align-items: center;
 }
 
@@ -86,7 +86,7 @@ form {
 }
 
 main {
-  margin-bottom: 40px;
+  margin-bottom: 35px;
 }
 
 aside {
@@ -120,7 +120,9 @@ input {
 textarea {
   flex: 1;
   height: 50px;
-}
+} */
+
+/*BUTTON*/
 
 button {
   border: 1px solid #ffa94d;
@@ -131,7 +133,6 @@ button {
   border-radius: 8%;
 }
 
-/*BUTTON*/
 .btn {
   color: inherit;
   text-transform: uppercase;
