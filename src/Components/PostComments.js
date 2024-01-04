@@ -4,13 +4,14 @@ import Comment from "./Comment";
 import { usePosts } from "./PostContext";
 
 export default function PostComments({ comments, id }) {
-  const { dispatch } = usePosts();
+  const { createComment } = usePosts();
   function handleMakeComment(e) {
     e.preventDefault();
     if (!comment) {
       return;
     }
-    dispatch({ type: "posts/comment", payload: { comment, id } });
+    createComment({ comment, id });
+
     setComment("");
   }
   const [comment, setComment] = useState("");

@@ -21,7 +21,7 @@ export default function Post({ postContent }) {
 
   return (
     <>
-      <li id={id}>
+      <li>
         {user_id === user.user_id && isEditing ? (
           <EditPost
             setIsEditing={setIsEditing}
@@ -32,7 +32,6 @@ export default function Post({ postContent }) {
         ) : (
           <>
             <label>{title}</label>
-
             {content.split(" ").length > 30 ? (
               <div>
                 <TextExpander collapsedNumWords={30} className="box">
@@ -46,19 +45,6 @@ export default function Post({ postContent }) {
             )}
           </>
         )}
-        {/*         
-        <label>{title}</label>
-        {content.split(" ").length > 30 ? (
-          <div>
-            <TextExpander collapsedNumWords={30} className="box">
-              {content}
-            </TextExpander>
-          </div>
-        ) : (
-          <div className="box">
-            <p>{content}</p>
-          </div>
-        )} */}
         {user_id === user.user_id && !isEditing && (
           <Button className="clear" onClick={() => setIsEditing(true)}>
             Edit Post

@@ -1,3 +1,4 @@
+/*GLOBAL*/
 * {
   padding: 0;
   margin: 0;
@@ -23,9 +24,9 @@ body {
   position: fixed;
   top: 0;
   right: 0;
-  padding: 16px;
+  padding: 14px;
   line-height: 1;
-  font-size: 26px;
+  font-size: 24px;
   background-color: #ffe8cc;
   border: none;
 }
@@ -33,14 +34,6 @@ body {
 section {
   max-width: 1140px;
   margin: 0 auto;
-}
-
-header {
-  margin-bottom: 32px;
-  font-weight: bold;
-
-  justify-content: space-between;
-  display: flex;
 }
 
 h1 {
@@ -66,61 +59,6 @@ h3 {
   margin-bottom: 16px;
   color: #333;
 }
-/* 
-header div {
-  display: flex;
-  gap: 30px;
-  align-items: center;
-}
-
-header button {
-  font-size: 14px;
-}
-
-form {
-  padding: 24px;
-  background-color: #fff4e6;
-  display: flex;
-  gap: 24px;
-  margin-bottom: 40px;
-}
-
-main {
-  margin-bottom: 35px;
-}
-
-aside {
-  margin-bottom: 40px;
-  opacity: 75%;
-}
-
-input,
-textarea,
-button {
-  font-size: 16px;
-  padding: 8px 12px;
-  border: 1px solid #ffe8cc;
-  font-family: inherit;
-  color: inherit;
-}
-
-input {
-  width: 12rem;
-}
-
-*::placeholder {
-  color: #999;
-}
-
-*:focus {
-  outline: 2px solid #ffa94d;
-  border-radius: 2px;
-}
-
-textarea {
-  flex: 1;
-  height: 50px;
-} */
 
 /*BUTTON*/
 
@@ -144,12 +82,6 @@ button {
   cursor: pointer;
 }
 
-.primary {
-  font-weight: 700;
-  background-color: var(--color-brand--2);
-  color: var(--color-dark--1);
-}
-
 .clear {
   font-weight: 600;
   background: none;
@@ -164,15 +96,9 @@ button {
   bottom: 4rem;
   left: 50%;
   transform: translateX(-50%);
-  background-color: var(--color-brand--2);
-  color: var(--color-dark--1);
+  background-color: #ffa94d;
+  color: #2d3439;
   box-shadow: 0 0.4rem 1.2rem rgba(36, 42, 46, 0.16);
-}
-
-h3 {
-  text-transform: capitalize;
-  margin-bottom: 16px;
-  color: #333;
 }
 
 .cta:link,
@@ -188,7 +114,7 @@ h3 {
   border-radius: 5px;
 }
 
-/* COMMENT BOX */
+/* COMMENT BOX AND POST CONTENT*/
 .box {
   padding: 10px;
   border: 1px solid #ccc;
@@ -345,7 +271,7 @@ input:focus {
   width: 6rem;
   height: 6rem;
   border-radius: 50%;
-  background: conic-gradient(#0000 10%, #ececec);
+  background: conic-gradient(#0000 10%, #8a8888);
   -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
   animation: rotate 1.5s infinite linear;
 }

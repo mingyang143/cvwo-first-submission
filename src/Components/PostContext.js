@@ -129,23 +129,40 @@ function PostProvider({ children }) {
     fetchUsers();
   }, []);
   //create post need more work with backend and frontend
-  function createPost() {
+  function createPost(newPost) {
     console.log("creating post");
-    AddPost({
-      id: 1,
-      title: "why do we have to study?",
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed mollis leo. Nulla non ligula molestie, varius velit non, maximus velit. Sed eros lorem, blandit et interdum ut, pharetra quis libero. Vivamus convallis nisl eros, vel aliquam sapien eleifend vitae. In hac habitasse platea dictumst. Cras arcu velit, sagittis et.",
-      likes: 0,
-      comments: ["qwewewe", "rtertret", "qwewqe"],
-      user_id: user.user_id,
-    });
+    dispatch({ type: "posts/addPost", payload: newPost });
+    const data = addPost(newPost);
+    //need to fetch comments again either by calling function manually or by using useEffect dependency array
   }
-  async function AddPost(newPost) {
+  async function addPost(newPost) {
     try {
       const res = await fetch(`/discussion`, {
         method: "post",
         body: JSON.stringify(newPost),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log(data);
+      return data;
+    } catch {
+      alert("There was an error loading data...");
+    } finally {
+    }
+  }
+
+  function createComment(newComment) {
+    console.log("creating comment");
+    dispatch({ type: "posts/comment", payload: newComment });
+    const data = addComment(newComment);
+  }
+  async function addComment(newComment) {
+    try {
+      const res = await fetch(`/comment`, {
+        method: "post",
+        body: JSON.stringify(newComment),
         headers: {
           "Content-Type": "application/json",
         },
@@ -196,6 +213,7 @@ function PostProvider({ children }) {
         dispatch,
         postEdit,
         createPost,
+        createComment,
       }}
     >
       {children}

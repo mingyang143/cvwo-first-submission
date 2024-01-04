@@ -2,22 +2,22 @@ import { useState } from "react";
 import Button from "./Button";
 import { usePosts } from "./PostContext";
 export default function FormMakePost() {
-  const { dispatch, createPost } = usePosts();
+  const { createPost } = usePosts();
   const [postTitle, setpostTitle] = useState("");
   const [postContent, setPostContent] = useState("");
-  const id = crypto.randomUUID();
+  // const id = crypto.randomUUID();
   function handleSubmit(e) {
     e.preventDefault();
     if (!postTitle || !postContent) return;
     const newPost = {
-      id,
+      // id: 1,
       title: postTitle,
       content: postContent,
       likes: 0,
       comments: [],
     };
-    dispatch({ type: "posts/addPost", payload: newPost });
-    createPost();
+
+    createPost(newPost);
   }
   return (
     <form onSubmit={handleSubmit}>
