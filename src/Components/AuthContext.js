@@ -37,12 +37,12 @@ function AuthProvider({ children }) {
 
   async function login(username, password) {
     dispatch({ type: "toggleLoading" });
-    const data = await isValidUser({ name: username });
+    const data = await dbIsValidUser({ name: username });
     dispatch({ type: "toggleLoading" });
     if (data?.errorCode === 0) {
       dispatch({
         type: "login",
-        payload: { name: username, user_id: data.payload.data.id },
+        payload: { name: username, userId: data.payload.data.id },
       });
       alert("Successfully logged in!");
     } else {
@@ -51,7 +51,7 @@ function AuthProvider({ children }) {
   }
   async function createUser(username, password) {
     dispatch({ type: "toggleLoading" });
-    const data = await PostUser({ name: username });
+    const data = await dbPostUser({ name: username });
     dispatch({ type: "toggleLoading" });
     if (data) {
       alert("New user created, please log in now");
@@ -65,7 +65,7 @@ function AuthProvider({ children }) {
     dispatch({ type: "logout" });
   }
 
-  async function isValidUser(newUser) {
+  async function dbIsValidUser(newUser) {
     try {
       const res = await fetch(`/checkuser?name=${newUser.name}`);
       const data = await res.json();
@@ -75,7 +75,7 @@ function AuthProvider({ children }) {
     } finally {
     }
   }
-  async function PostUser(newUser) {
+  async function dbPostUser(newUser) {
     try {
       const res = await fetch(`/users`, {
         method: "post",

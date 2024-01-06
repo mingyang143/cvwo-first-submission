@@ -5,7 +5,7 @@ export default function PostList() {
   return (
     <div>
       <ul>
-        {posts.map((post) => (
+        {posts?.map((post) => (
           <Post postContent={post} key={post.id} />
         ))}
       </ul>

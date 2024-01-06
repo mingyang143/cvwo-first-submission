@@ -1,20 +1,23 @@
 import { useState } from "react";
 import Button from "./Button";
-import PostComments from "./PostComments";
+import FormMakeComment from "./FormMakeComment";
 import TextExpander from "./TextExpander";
 import LikesCounter from "./LikesCounter";
 import { usePosts } from "./PostContext";
 import { useAuth } from "./AuthContext";
 import EditPost from "./EditPost";
 export default function Post({ postContent }) {
-  const { dispatch } = usePosts();
+  const { likesInc } = usePosts();
   const { user } = useAuth();
-  const { id, title, content, likes, comments, user_id } = postContent;
+  const { id, title, content, likes, comments, userId } = postContent;
 
   const [isEditing, setIsEditing] = useState(false);
 
   function handleSelection() {
     setCommentView((CommentView) => !CommentView);
+  }
+  function handleLikes(id) {
+    likesInc(id);
   }
 
   const [CommentView, setCommentView] = useState(false);
@@ -22,7 +25,7 @@ export default function Post({ postContent }) {
   return (
     <>
       <li>
-        {user_id === user.user_id && isEditing ? (
+        {userId === user.userId && isEditing ? (
           <EditPost
             setIsEditing={setIsEditing}
             id={id}
@@ -45,16 +48,13 @@ export default function Post({ postContent }) {
             )}
           </>
         )}
-        {user_id === user.user_id && !isEditing && (
+        {userId === user.userId && !isEditing && (
           <Button className="clear" onClick={() => setIsEditing(true)}>
             Edit Post
           </Button>
         )}
 
-        <LikesCounter
-          likes={likes}
-          onUpdateLikes={() => dispatch({ type: "posts/likes", payload: id })}
-        />
+        <LikesCounter likes={likes} onUpdateLikes={() => handleLikes(id)} />
 
         {
           <Button onClick={handleSelection}>
@@ -62,7 +62,7 @@ export default function Post({ postContent }) {
           </Button>
         }
       </li>
-      {CommentView && <PostComments comments={comments} id={id} />}
+      {CommentView && <FormMakeComment comments={comments} id={id} />}
     </>
   );
 }

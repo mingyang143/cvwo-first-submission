@@ -3,33 +3,6 @@ import { useAuth } from "./AuthContext";
 
 const PostContext = createContext();
 
-// [
-//   {
-//     id: 0,
-//     title: "why are cats curious?",
-//     content:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed mollis leo. Nulla non ligula molestie, varius velit non, maximus velit. Sed eros lorem, blandit et interdum ut, pharetra quis libero. Vivamus convallis nisl eros, vel aliquam sapien eleifend vitae. In hac habitasse platea dictumst. Cras arcu velit, sagittis et.",
-//     likes: 10,
-//     comments: ["qwewewe", "rtertret", "qwewqe"],
-//   },
-//   {
-//     id: 1,
-//     title: "why do we have to study?",
-//     content:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed mollis leo. Nulla non ligula molestie, varius velit non, maximus velit. Sed eros lorem, blandit et interdum ut, pharetra quis libero. Vivamus convallis nisl eros, vel aliquam sapien eleifend vitae. In hac habitasse platea dictumst. Cras arcu velit, sagittis et.",
-//     likes: 7,
-//     comments: ["qwewewe", "rtertret", "qwewqe"],
-//   },
-//   {
-//     id: 2,
-//     title: "How to escape the matrix?",
-//     content:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed mollis leo. Nulla non ligula molestie, varius velit non, maximus velit. Sed eros lorem, blandit et interdum ut, pharetra quis libero. Vivamus convallis nisl eros, vel aliquam sapien eleifend vitae. In hac habitasse platea dictumst. Cras arcu velit, sagittis et.",
-//     likes: 1,
-//     comments: ["qwewewe", "rtertret", "qwewqe"],
-//   },
-// ]
-
 const initialState = {
   posts: [],
   isPostFormOpen: false,
@@ -76,6 +49,7 @@ function reducer(state, action) {
         error: "",
       };
     case "posts/errorFetch":
+      alert(action.payload);
       return {
         ...state,
         error: action.payload,
@@ -84,8 +58,8 @@ function reducer(state, action) {
       return {
         ...state,
         posts: state.posts.map((post) =>
-          post.id === action.payload.id
-            ? { ...post, comments: [...post.comments, action.payload.comment] }
+          post.id === action.payload.discussionId
+            ? { ...post, comments: [...post.comments, action.payload] }
             : post
         ),
       };
@@ -102,7 +76,7 @@ function PostProvider({ children }) {
 
   useEffect(function () {
     const controller = new AbortController();
-    async function fetchUsers() {
+    async function fetchDiscussions() {
       try {
         dispatch({ type: "posts/loadingToggle" });
         const res = await fetch("/discussions");
@@ -126,60 +100,67 @@ function PostProvider({ children }) {
       }
     }
 
-    fetchUsers();
+    fetchDiscussions();
   }, []);
-  //create post need more work with backend and frontend
   function createPost(newPost) {
-    console.log("creating post");
-    dispatch({ type: "posts/addPost", payload: newPost });
-    const data = addPost(newPost);
-    //need to fetch comments again either by calling function manually or by using useEffect dependency array
+    dbAddPost(newPost);
   }
-  async function addPost(newPost) {
+  async function dbAddPost(newPost) {
+    dispatch({ type: "posts/loadingToggle" });
     try {
       const res = await fetch(`/discussion`, {
-        method: "post",
+        method: "put",
         body: JSON.stringify(newPost),
         headers: {
           "Content-Type": "application/json",
         },
       });
+      if (!res.ok)
+        throw new Error("Something went wrong with creating discussion");
       const data = await res.json();
-      console.log(data);
+      dispatch({ type: "posts/addPost", payload: data.payload.data });
+
       return data;
-    } catch {
-      alert("There was an error loading data...");
+    } catch (err) {
+      dispatch({ type: "posts/errorFetch", payload: err.message });
     } finally {
+      dispatch({ type: "posts/loadingToggle" });
     }
   }
 
   function createComment(newComment) {
-    console.log("creating comment");
     dispatch({ type: "posts/comment", payload: newComment });
-    const data = addComment(newComment);
+
+    dbAddComment({
+      comment: newComment.comment,
+      discussionId: newComment.discussionId,
+    });
   }
-  async function addComment(newComment) {
+  async function dbAddComment(newComment) {
+    dispatch({ type: "posts/loadingToggle" });
     try {
       const res = await fetch(`/comment`, {
-        method: "post",
+        method: "put",
         body: JSON.stringify(newComment),
         headers: {
           "Content-Type": "application/json",
         },
       });
+      if (!res.ok) throw new Error("Something went wrong with adding comment");
       const data = await res.json();
-      console.log(data);
       return data;
-    } catch {
-      alert("There was an error loading data...");
+    } catch (err) {
+      dispatch({ type: "posts/errorFetch", payload: err.message });
     } finally {
+      dispatch({ type: "posts/loadingToggle" });
     }
   }
-
-  async function postEdit({ id, title, content }) {
-    console.log("editing post");
+  function postEdit(postToBeEdited) {
+    dbPostEdit(postToBeEdited);
+  }
+  async function dbPostEdit({ id, title, content }) {
+    dispatch({ type: "posts/loadingToggle" });
     try {
-      dispatch({ type: "posts/loadingToggle" });
       const res = await fetch(`/discussion`, {
         method: "post",
         body: JSON.stringify({
@@ -192,6 +173,8 @@ function PostProvider({ children }) {
           "Content-Type": "application/json",
         },
       });
+      if (!res.ok)
+        throw new Error("Something went wrong with editing discussion");
       const data = await res.json();
       dispatch({ type: "posts/edit", payload: { id, title, content } });
       return data;
@@ -200,6 +183,26 @@ function PostProvider({ children }) {
       alert("There was an error editing data...");
     } finally {
       dispatch({ type: "posts/loadingToggle" });
+    }
+  }
+  function likesInc(id) {
+    dbLikesInc(id);
+  }
+  async function dbLikesInc(id) {
+    try {
+      dispatch({ type: "posts/likes", payload: id });
+      const res = await fetch(`/likes`, {
+        method: "put",
+        body: JSON.stringify({
+          discussionId: id,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!res.ok) throw new Error("Something went wrong with adding comment");
+    } catch (err) {
+      dispatch({ type: "posts/errorFetch", payload: err.message });
     }
   }
 
@@ -214,6 +217,7 @@ function PostProvider({ children }) {
         postEdit,
         createPost,
         createComment,
+        likesInc,
       }}
     >
       {children}
