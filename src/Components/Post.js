@@ -7,7 +7,7 @@ import { usePosts } from "./PostContext";
 import { useAuth } from "./AuthContext";
 import EditPost from "./EditPost";
 export default function Post({ postContent }) {
-  const { likesInc } = usePosts();
+  const { postLike, postDelete } = usePosts();
   const { user } = useAuth();
   const { id, title, content, likes, comments, userId } = postContent;
 
@@ -17,7 +17,11 @@ export default function Post({ postContent }) {
     setCommentView((CommentView) => !CommentView);
   }
   function handleLikes(id) {
-    likesInc(id);
+    postLike(id);
+  }
+
+  function handleDelete(id) {
+    postDelete(id);
   }
 
   const [CommentView, setCommentView] = useState(false);
@@ -51,6 +55,11 @@ export default function Post({ postContent }) {
         {userId === user.userId && !isEditing && (
           <Button className="clear" onClick={() => setIsEditing(true)}>
             Edit Post
+          </Button>
+        )}
+        {userId === user.userId && (
+          <Button onClick={() => handleDelete(id)} className="clear">
+            Delete post ❌
           </Button>
         )}
 

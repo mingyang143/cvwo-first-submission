@@ -70,6 +70,11 @@ function reducer(state, action) {
             : post
         ),
       };
+    case "posts/delete":
+      return {
+        ...state,
+        posts: state.posts.filter((post) => post.id !== action.payload),
+      };
 
     default:
       throw new Error("unknown action");
@@ -110,11 +115,11 @@ function PostProvider({ children }) {
     fetchDiscussions();
   }, []);
 
-  const createPost = useCallback(function createPost(newPost) {
-    dbAddPost(newPost);
+  const postCreate = useCallback(function postCreate(newPost) {
+    dbPostCreate(newPost);
   }, []);
 
-  async function dbAddPost(newPost) {
+  async function dbPostCreate(newPost) {
     dispatch({ type: "posts/loadingToggle" });
     try {
       const res = await fetch(`/discussion`, {
@@ -137,16 +142,16 @@ function PostProvider({ children }) {
     }
   }
 
-  const createComment = useCallback(function createComment(newComment) {
+  const postComment = useCallback(function postComment(newComment) {
     dispatch({ type: "posts/comment", payload: newComment });
 
-    dbAddComment({
+    dbPostComment({
       comment: newComment.comment,
       discussionId: newComment.discussionId,
     });
   }, []);
 
-  async function dbAddComment(newComment) {
+  async function dbPostComment(newComment) {
     dispatch({ type: "posts/loadingToggle" });
     try {
       const res = await fetch(`/comment`, {
@@ -204,11 +209,11 @@ function PostProvider({ children }) {
     [dbPostEdit]
   );
 
-  const likesInc = useCallback(function likesInc(id) {
-    dbLikesInc(id);
+  const postLike = useCallback(function postLike(id) {
+    dbPostLike(id);
   }, []);
 
-  async function dbLikesInc(id) {
+  async function dbPostLike(id) {
     try {
       dispatch({ type: "posts/likes", payload: id });
       const res = await fetch(`/likes`, {
@@ -225,6 +230,35 @@ function PostProvider({ children }) {
       dispatch({ type: "posts/errorFetch", payload: err.message });
     }
   }
+
+  const postDelete = useCallback(function postDelete(id) {
+    dbPostDelete(id);
+  }, []);
+
+  async function dbPostDelete(id) {
+    dispatch({ type: "posts/loadingToggle" });
+    try {
+      const res = await fetch(`/discussion`, {
+        method: "delete",
+        body: JSON.stringify({
+          discussionId: id,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!res.ok)
+        throw new Error("Something went wrong with deleting discussion");
+      dispatch({ type: "posts/delete", payload: id });
+      const data = await res.json();
+      return data;
+    } catch (err) {
+      dispatch({ type: "posts/errorFetch", payload: err.message });
+    } finally {
+      dispatch({ type: "posts/loadingToggle" });
+    }
+  }
+
   const value = useMemo(() => {
     return {
       posts,
@@ -233,9 +267,10 @@ function PostProvider({ children }) {
       error,
       dispatch,
       postEdit,
-      createPost,
-      createComment,
-      likesInc,
+      postCreate,
+      postComment,
+      postLike,
+      postDelete,
     };
   }, [
     posts,
@@ -244,9 +279,10 @@ function PostProvider({ children }) {
     error,
     dispatch,
     postEdit,
-    createPost,
-    createComment,
-    likesInc,
+    postCreate,
+    postComment,
+    postLike,
+    postDelete,
   ]);
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
 }

@@ -3,7 +3,7 @@ import Button from "./Button";
 import { usePosts } from "./PostContext";
 import { useAuth } from "./AuthContext";
 export default function FormMakePost() {
-  const { createPost } = usePosts();
+  const { postCreate } = usePosts();
   const [postTitle, setpostTitle] = useState("");
   const [postContent, setPostContent] = useState("");
   const { user } = useAuth();
@@ -20,7 +20,7 @@ export default function FormMakePost() {
       comments: [],
     };
 
-    createPost(newPost);
+    postCreate(newPost);
   }
   return (
     <form onSubmit={handleSubmit}>

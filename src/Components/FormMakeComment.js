@@ -4,13 +4,13 @@ import Comment from "./Comment";
 import { usePosts } from "./PostContext";
 export default function FormMakeComment({ comments, id }) {
   const TEMP_ID = window.crypto.randomUUID();
-  const { createComment } = usePosts();
+  const { postComment } = usePosts();
   function handleMakeComment(e) {
     e.preventDefault();
     if (!comment) {
       return;
     }
-    createComment({ id: TEMP_ID, comment, discussionId: id });
+    postComment({ id: TEMP_ID, comment, discussionId: id });
 
     setComment("");
   }
