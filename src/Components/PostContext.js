@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useReducer } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+} from "react";
 import { useAuth } from "./AuthContext";
 
 const PostContext = createContext();
@@ -102,9 +109,11 @@ function PostProvider({ children }) {
 
     fetchDiscussions();
   }, []);
-  function createPost(newPost) {
+
+  const createPost = useCallback(function createPost(newPost) {
     dbAddPost(newPost);
-  }
+  }, []);
+
   async function dbAddPost(newPost) {
     dispatch({ type: "posts/loadingToggle" });
     try {
@@ -128,14 +137,15 @@ function PostProvider({ children }) {
     }
   }
 
-  function createComment(newComment) {
+  const createComment = useCallback(function createComment(newComment) {
     dispatch({ type: "posts/comment", payload: newComment });
 
     dbAddComment({
       comment: newComment.comment,
       discussionId: newComment.discussionId,
     });
-  }
+  }, []);
+
   async function dbAddComment(newComment) {
     dispatch({ type: "posts/loadingToggle" });
     try {
@@ -155,39 +165,49 @@ function PostProvider({ children }) {
       dispatch({ type: "posts/loadingToggle" });
     }
   }
-  function postEdit(postToBeEdited) {
-    dbPostEdit(postToBeEdited);
-  }
-  async function dbPostEdit({ id, title, content }) {
-    dispatch({ type: "posts/loadingToggle" });
-    try {
-      const res = await fetch(`/discussion`, {
-        method: "post",
-        body: JSON.stringify({
-          id: id,
-          user_id: user.user_id,
-          title: title,
-          content: content,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!res.ok)
-        throw new Error("Something went wrong with editing discussion");
-      const data = await res.json();
-      dispatch({ type: "posts/edit", payload: { id, title, content } });
-      return data;
-    } catch (err) {
-      dispatch({ type: "posts/errorFetch", payload: err.message });
-      alert("There was an error editing data...");
-    } finally {
+
+  const dbPostEdit = useCallback(
+    async function dbPostEdit({ id, title, content }) {
       dispatch({ type: "posts/loadingToggle" });
-    }
-  }
-  function likesInc(id) {
+      try {
+        const res = await fetch(`/discussion`, {
+          method: "post",
+          body: JSON.stringify({
+            id: id,
+            user_id: user.user_id,
+            title: title,
+            content: content,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!res.ok)
+          throw new Error("Something went wrong with editing discussion");
+        const data = await res.json();
+        dispatch({ type: "posts/edit", payload: { id, title, content } });
+        return data;
+      } catch (err) {
+        dispatch({ type: "posts/errorFetch", payload: err.message });
+        alert("There was an error editing data...");
+      } finally {
+        dispatch({ type: "posts/loadingToggle" });
+      }
+    },
+    [user.user_id]
+  );
+
+  const postEdit = useCallback(
+    function postEdit(postToBeEdited) {
+      dbPostEdit(postToBeEdited);
+    },
+    [dbPostEdit]
+  );
+
+  const likesInc = useCallback(function likesInc(id) {
     dbLikesInc(id);
-  }
+  }, []);
+
   async function dbLikesInc(id) {
     try {
       dispatch({ type: "posts/likes", payload: id });
@@ -205,24 +225,30 @@ function PostProvider({ children }) {
       dispatch({ type: "posts/errorFetch", payload: err.message });
     }
   }
-
-  return (
-    <PostContext.Provider
-      value={{
-        posts,
-        isPostFormOpen,
-        isLoading,
-        error,
-        dispatch,
-        postEdit,
-        createPost,
-        createComment,
-        likesInc,
-      }}
-    >
-      {children}
-    </PostContext.Provider>
-  );
+  const value = useMemo(() => {
+    return {
+      posts,
+      isPostFormOpen,
+      isLoading,
+      error,
+      dispatch,
+      postEdit,
+      createPost,
+      createComment,
+      likesInc,
+    };
+  }, [
+    posts,
+    isPostFormOpen,
+    isLoading,
+    error,
+    dispatch,
+    postEdit,
+    createPost,
+    createComment,
+    likesInc,
+  ]);
+  return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
 }
 
 function usePosts() {

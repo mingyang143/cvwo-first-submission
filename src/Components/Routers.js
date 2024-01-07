@@ -1,15 +1,19 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import App from "./App";
-import Login from "./Login";
-import Navigation from "./Navigation";
-import Button from "./Button";
+
 import { PostProvider } from "./PostContext";
 import { AuthProvider } from "./AuthContext";
-import HomePage from "../HomePage";
 import ProtectedRoute from "./ProtectedRoute";
-import PageNotFound from "../PageNotFound";
-import CreateUser from "./CreateUser";
+
+import Navigation from "./Navigation";
+import Button from "./Button";
+import SpinnerFull from "./SpinnerFull";
+
+const HomePage = lazy(() => import("../HomePage"));
+const App = lazy(() => import("./App"));
+const Login = lazy(() => import("./Login"));
+const PageNotFound = lazy(() => import("../PageNotFound"));
+const CreateUser = lazy(() => import("./CreateUser"));
 
 function Main() {
   const [isDark, setIsDark] = useState(false);
@@ -32,22 +36,24 @@ function Main() {
             {isDark ? "☀️" : "🌙"}
           </Button>
         </header>
-        <Routes>
-          <Route index element={<HomePage />} />
-          <Route
-            path="app"
-            element={
-              <ProtectedRoute>
-                <PostProvider>
-                  <App />
-                </PostProvider>
-              </ProtectedRoute>
-            }
-          />
-          <Route path="login" element={<Login />} />
-          <Route path="create" element={<CreateUser />} />
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
+        <Suspense fallback={<SpinnerFull />}>
+          <Routes>
+            <Route index element={<HomePage />} />
+            <Route
+              path="app"
+              element={
+                <ProtectedRoute>
+                  <PostProvider>
+                    <App />
+                  </PostProvider>
+                </ProtectedRoute>
+              }
+            />
+            <Route path="login" element={<Login />} />
+            <Route path="create" element={<CreateUser />} />
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>
+        </Suspense>
       </AuthProvider>
     </BrowserRouter>
   );
